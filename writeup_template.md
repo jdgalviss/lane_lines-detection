@@ -32,7 +32,7 @@ The goals / steps of this project are the following:
 
 ### 1. The Pipeline
 
-Starting with the inoput image: 
+Starting with the input image: 
 
 ![alt text][image1]
 
