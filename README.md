@@ -1,56 +1,81 @@
 # **Finding Lane Lines on the Road** 
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
-<img src="examples/laneLines_thirdPass.jpg" width="480" alt="Combined Image" />
+## Writeup - Juan David Galvis
 
-Overview
 ---
 
-When we drive, we use our eyes to decide where to go.  The lines on the road that show us where the lanes are act as our constant reference for where to steer the vehicle.  Naturally, one of the first things we would like to do in developing a self-driving car is to automatically detect lane lines using an algorithm.
+**Finding Lane Lines on the Road**
 
-In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
-
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
-
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
+The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road
 
 
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
+[//]: # (Image References)
 
-1. Describe the pipeline
+[image1]: ./output_images/01_initial_image.png "Input_Image"
 
-2. Identify any shortcomings
+[image2]: ./output_images/02_contrasted_image.png "Contrasted_Image"
 
-3. Suggest possible improvements
+[image3]: ./output_images/03_gray_image.png "Grayscale_Image"
 
-We encourage using images in your writeup to demonstrate how your pipeline works.  
+[image4]: ./output_images/04_blur_image.png "Blur_Image"
 
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
+[image5]: ./output_images/05_edges_image.png "Edges_Image"
 
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+[image6]: ./output_images/06_masked_image.png "Masked_Edges_Image"
 
+[image7]: ./output_images/07_result_image.png "Masked_Edges_Image"
 
-The Project
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
+### Reflection
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://classroom.udacity.com/nanodegrees/nd013/parts/fbf77062-5703-404e-b60c-95b78b2f3f9e/modules/83ec35ee-1e02-48a5-bdb7-d244bd47c2dc/lessons/8c82408b-a217-4d09-b81d-1bda4c6380ef/concepts/4f1870e0-3849-43e4-b670-12e6f2d4b7a7) if you haven't already.
+### 1. The Pipeline
 
-**Step 2:** Open the code in a Jupyter Notebook
+Starting with the input image: 
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
+![alt text][image1]
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+My pipeline consisted of 5 steps. 
 
-`> jupyter notebook`
+1. First I improve the contrast of the image by converting it to the LAB Color model, which is widely used in photoshop for color and lightness contrast correction, and CLAHE (Contrast Limited Adaptive Histogram Equalization) on 'L' channel. This allows to bring up lane lines in circumstances where there is low contrast between lane and pavement. This has the downside of sharpening edges of other features like shades and road marks, however with a propper setting of the canny edge detection this can be to certain point avoided.
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+![alt text][image2]
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
+2. Then I converted the images to grayscale:
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+![alt text][image3]
+
+3. Then I apply blur filter to eliminate some possible noise and soften some of the edges that became stronger on the first step:
+
+![alt text][image4]
+
+4. After I apply canny edge detection, looking only for strong edges (low_threshold = 80, high_threshold = 240) since in the first step all edges were highlighted.
+
+![alt text][image5]
+
+5. Then I apply two masks (one external and one internal) to define a region where lines should be. It is important to take into account that mask's vertices should be dependat of image size and not fixed values:
+
+![alt text][image6]
+
+6. Finally I apply Hough lines to detect all lines on the masked edges image, and these get processed in the draw_lines function, where I diffirentiate left and right lane lines by their slope (slope > 0 corresponds to right lane line and slope < 0 corresponds to left lane line) Then, slopes get filtered to eliminate horizontal lines, such that if abs(slome) < 0.5, the line isn't taken into account (from the 3 videos I could see that the slopes of the lines are always > 0.6). This way, 2 lines are drawn per image, corresponding to the right and left lane line.
+
+![alt text][image7]
+
+
+
+### 2. Potential shortcommings
+
+There are two main shortcomings with the developed pipeline:
+
+  1. Line Correctness: Even though the pipeline works really good in the first two videos and acceptably in the third one (challenge), shades on the road or tire marks affect the pipeline's performance. Maybe some further image processing could help eliminate the effect of shades and marks on the road.
+  
+  2. Line detection robustness: In some really few cases, there can be no lane detection at all (hough lines doesn't return any line or lines are rejected because of their slope) It happens only for one lane line among all the 3 videos, but it could happen in another videos if the lighting or the conditions change. Adjusting the canny edges or hough lines parameters could help fix this but would also compromise the performance of the pipeline. I think that more robust algorithms should be implemented to avoid this. One easy solution for this particular case would be to save the previous line for when no line is detected.
+
+
+### 3. Suggest possible improvements to your pipeline
+
+Like said the pipeline works in general well on the 3 videos but I don't think it is robust enough for all the cases, so it definetly needs more robustness for cases with shades, lane marks or other features in the image. Further image processing or other algorithms could be explored.
+
+Sometimes no line is detected (even though it only happened once among all 3 videos), it is not guranteed that it won't happen more if we try with another videos, for this, the solution could be to save some of the previous detected lines and applying a low pass filter to the parameters of the line (m and b) since lane lines slope and location shouldn't change that fast.
 
