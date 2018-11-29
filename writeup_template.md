@@ -11,13 +11,21 @@ The goals / steps of this project are the following:
 
 
 [//]: # (Image References)
-[image1]: ./output_images/01_initial_image.png "Input Image"
-[image2]: ./output_images/02_contrasted_image.png "Contrasted Image"
-[image3]: ./output_images/03_gray_image.png "Grayscale Image"
-[image4]: ./output_images/04_blur_image.png "Blur Image"
-[image5]: ./output_images/05_edges_image.png "Edges Image"
-[image6]: ./output_images/06_masked_image.png "Masked Edges Image"
-[image7]: ./output_images/07_result_image.png "Masked Edges Image"
+
+[image1]: ./output_images/01_initial_image.png "Input_Image"
+
+[image2]: ./output_images/02_contrasted_image.png "Contrasted_Image"
+
+[image3]: ./output_images/03_gray_image.png "Grayscale_Image"
+
+[image4]: ./output_images/04_blur_image.png "Blur_Image"
+
+[image5]: ./output_images/05_edges_image.png "Edges_Image"
+
+[image6]: ./output_images/06_masked_image.png "Masked_Edges_Image"
+
+[image7]: ./output_images/07_result_image.png "Masked_Edges_Image"
+
 ---
 
 ### Reflection
