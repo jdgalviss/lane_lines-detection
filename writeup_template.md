@@ -28,27 +28,27 @@ My pipeline consisted of 5 steps.
 
 1. First I improve the contrast of the image by converting it to the LAB Color model, which is widely used in photoshop for color and lightness contrast correction, and CLAHE (Contrast Limited Adaptive Histogram Equalization) on 'L' channel. This allows to bring up lane lines in circumstances where there is low contrast between lane and pavement. This has the downside of sharpening edges of other features like shades and road marks, however with a propper setting of the canny edge detection this can be to certain point avoided.
 
-![alt text][image2]: ./output_images/02_contrasted_image.png "Contrasted Image"
+[image2]: ./output_images/02_contrasted_image.png "Contrasted Image"
 
 2. Then I converted the images to grayscale:
 
-![alt text][image3]: ./output_images/03_gray_image.png "Grayscale Image"
+[image3]: ./output_images/03_gray_image.png "Grayscale Image"
 
 3. Then I apply blur filter to eliminate some possible noise and soften some of the edges that became stronger on the first step:
 
-![alt text][image4]: ./output_images/04_blur_image.png "Blur Image"
+[image4]: ./output_images/04_blur_image.png "Blur Image"
 
 4. After I apply canny edge detection, looking only for strong edges (low_threshold = 80, high_threshold = 240) since in the first step all edges were highlighted.
 
-![alt text][image5]: ./output_images/05_edges_image.png "Edges Image"
+[image5]: ./output_images/05_edges_image.png "Edges Image"
 
 5. Then I apply two masks (one external and one internal) to define a region where lines should be:
 
-![alt text][image6]: ./output_images/06_masked_image.png "Masked Edges Image"
+[image6]: ./output_images/06_masked_image.png "Masked Edges Image"
 
 6. Finally I apply Hough lines to detect all lines on the masked edges image, and these get processed in the draw_lines function, where I diffirentiate left and right lane lines by their slope (slope > 0 corresponds to right lane line and slope < 0 corresponds to left lane line) Then, slopes get filtered to eliminate horizontal lines, such that if abs(slome) < 0.5, the line isn't taken into account (from the 3 videos I could see that the slopes of the lines are always > 0.6). This way, 2 lines are drawn per image, corresponding to the right and left lane line.
 
-![alt text][image7]: ./output_images/07_result_image.png "Masked Edges Image"
+[image7]: ./output_images/07_result_image.png "Masked Edges Image"
 
 
 
