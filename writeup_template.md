@@ -11,9 +11,13 @@ The goals / steps of this project are the following:
 
 
 [//]: # (Image References)
-
-
-
+[image1]: ./output_images/01_initial_image.png "Input Image"
+[image2]: ./output_images/02_contrasted_image.png "Contrasted Image"
+[image3]: ./output_images/03_gray_image.png "Grayscale Image"
+[image4]: ./output_images/04_blur_image.png "Blur Image"
+[image5]: ./output_images/05_edges_image.png "Edges Image"
+[image6]: ./output_images/06_masked_image.png "Masked Edges Image"
+[image7]: ./output_images/07_result_image.png "Masked Edges Image"
 ---
 
 ### Reflection
@@ -22,33 +26,33 @@ The goals / steps of this project are the following:
 
 Starting with the inoput image: 
 
-[image1]: ./output_images/01_initial_image.png "Input Image"
+![alt text][image1]
 
 My pipeline consisted of 5 steps. 
 
 1. First I improve the contrast of the image by converting it to the LAB Color model, which is widely used in photoshop for color and lightness contrast correction, and CLAHE (Contrast Limited Adaptive Histogram Equalization) on 'L' channel. This allows to bring up lane lines in circumstances where there is low contrast between lane and pavement. This has the downside of sharpening edges of other features like shades and road marks, however with a propper setting of the canny edge detection this can be to certain point avoided.
 
-[image2]: ./output_images/02_contrasted_image.png "Contrasted Image"
+![alt text][image2]
 
 2. Then I converted the images to grayscale:
 
-[image3]: ./output_images/03_gray_image.png "Grayscale Image"
+![alt text][image3]
 
 3. Then I apply blur filter to eliminate some possible noise and soften some of the edges that became stronger on the first step:
 
-[image4]: ./output_images/04_blur_image.png "Blur Image"
+![alt text][image4]
 
 4. After I apply canny edge detection, looking only for strong edges (low_threshold = 80, high_threshold = 240) since in the first step all edges were highlighted.
 
-[image5]: ./output_images/05_edges_image.png "Edges Image"
+![alt text][image5]
 
-5. Then I apply two masks (one external and one internal) to define a region where lines should be:
+5. Then I apply two masks (one external and one internal) to define a region where lines should be. It is important to take into account that mask's vertices should be dependat of image size and not fixed values:
 
-[image6]: ./output_images/06_masked_image.png "Masked Edges Image"
+![alt text][image6]
 
 6. Finally I apply Hough lines to detect all lines on the masked edges image, and these get processed in the draw_lines function, where I diffirentiate left and right lane lines by their slope (slope > 0 corresponds to right lane line and slope < 0 corresponds to left lane line) Then, slopes get filtered to eliminate horizontal lines, such that if abs(slome) < 0.5, the line isn't taken into account (from the 3 videos I could see that the slopes of the lines are always > 0.6). This way, 2 lines are drawn per image, corresponding to the right and left lane line.
 
-[image7]: ./output_images/07_result_image.png "Masked Edges Image"
+![alt text][image7]
 
 
 
@@ -56,7 +60,7 @@ My pipeline consisted of 5 steps.
 
 There are two main shortcomings with the developed pipeline:
 
-  1. Line Correctness: Even though the pipeline works really good in the first two videos and acceptably in the third one, shades on the road or tire marks affect the pipeline's performance. Maybe some further image processing could help eliminate the effect of shades and marks on the road.
+  1. Line Correctness: Even though the pipeline works really good in the first two videos and acceptably in the third one (challenge), shades on the road or tire marks affect the pipeline's performance. Maybe some further image processing could help eliminate the effect of shades and marks on the road.
   
   2. Line detection robustness: In some really few cases, there can be no lane detection at all (hough lines doesn't return any line or lines are rejected because of their slope) It happens only for one lane line among all the 3 videos, but it could happen in another videos if the lighting or the conditions change. Adjusting the canny edges or hough lines parameters could help fix this but would also compromise the performance of the pipeline. I think that more robust algorithms should be implemented to avoid this. One easy solution for this particular case would be to save the previous line for when no line is detected.
 
